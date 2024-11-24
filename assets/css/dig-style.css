@@ -1,0 +1,16 @@
+#invoice-generator {
+    font-family: Arial, sans-serif;
+}
+
+#invoice-generator input, #invoice-generator select, #invoice-generator button {
+    margin: 5px 0;
+    padding: 5px;
+}
+
+#items-container .item {
+    margin-bottom: 10px;
+}
+
+#invoice-output {
+    margin-top: 20px;
+}
