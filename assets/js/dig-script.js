@@ -2,7 +2,7 @@ jQuery(document).ready(function ($) {
     // setting the form 
     $('#invoice-generator').html(`
         <div>
-            <label>Select Input Method:</label>
+            <h3>Input Method</h3>
             <select id="input-method">
                 <option value="form">Form</option>
                 <option value="json">JSON File</option>
@@ -12,11 +12,40 @@ jQuery(document).ready(function ($) {
         <div id="form-input" class="input-method">
             <h3>Invoice Form</h3>
             <form id="invoice-form">
-                <label>Customer Name:</label><input type="text" id="customer-name" required><br>
-                <label>Phone:</label><input type="text" id="customer-phone" required><br>
-                <label>Email:</label><input type="email" id="customer-email"><br>
-                <label>Invoice Number:</label><input type="text" id="invoice-number" required><br>
-                <label>Invoice Date:</label><input type="date" id="invoice-date" required><br>
+                <div id="details-container">
+                    <div class="item">
+                        <label>Customer Name:</label>
+                        <input type="text" id="customer-name" required>
+                    </div>
+                    <div class="item">
+                        <label>Phone:</label>
+                        <input type="text" id="customer-phone" required>
+                    </div>
+                    <div class="item">
+                        <label>Email:</label>
+                        <input type="email" id="customer-email">
+                    </div>
+                    <div class="item">
+                        <label>Invoice Number:</label>
+                        <input type="text" id="invoice-number" required>
+                    </div>
+                    <div class="item">
+                        <label>Invoice Date:</label>
+                        <input type="date" id="invoice-date" required>
+                    </div>
+                    <div class="item">
+
+                        <label>Currency:</label>
+                        <input type="text" id="currency" placeholder="e.g., USD, EUR, ₹" value="USD" required>
+                    </div>
+                    <div class="item">
+                        <label>Currency Position:</label>
+                        <select id="currency-position">
+                            <option value="after">After</option>
+                            <option value="before">Before</option>
+                        </select>
+                    </div>
+                </div>
                 
                 <h4>Invoice Items</h4>
                 <div id="items-container">
@@ -43,7 +72,7 @@ jQuery(document).ready(function ($) {
             <button id="export-text">Export as Text</button>
             <button id="export-json">Export as JSON</button>
             <button id="edit-invoice">Edit Invoice</button>
-        </div>`)
+        </div>`);
 
     // Toggle Input Methods
     $('#input-method').change(function () {
@@ -77,6 +106,8 @@ jQuery(document).ready(function ($) {
             email: $('#customer-email').val(),
             invoiceNumber: $('#invoice-number').val(),
             invoiceDate: $('#invoice-date').val(),
+            currency: $('#currency').val(),
+            currencyPosition: $('#currency-position').val(),
             items: [],
             total: 0,
         };
@@ -115,6 +146,12 @@ jQuery(document).ready(function ($) {
 
     // Display Invoice
     function displayInvoice(invoice) {
+        const formatCurrency = (amount) => {
+            return invoice.currencyPosition === 'before'
+                ? `${invoice.currency} ${amount.toFixed(2)}`
+                : `${amount.toFixed(2)} ${invoice.currency}`;
+        };
+
         const invoiceText = `
 Customer Name: ${invoice.customerName}
 Phone: ${invoice.phone}
@@ -124,10 +161,10 @@ Invoice Date: ${invoice.invoiceDate}
 
 Items:
 ${invoice.items.map(item =>
-            `${item.description} | Quantity: ${item.quantity} | Unit Price: ${item.unitPrice} | Total: ${item.itemTotal}`
+            `${item.description} | Quantity: ${item.quantity} | Unit Price: ${formatCurrency(item.unitPrice)} | Total: ${formatCurrency(item.itemTotal)}`
         ).join('\n')}
 
-Total: ${invoice.total}
+Total: ${formatCurrency(invoice.total)}
         `;
 
         $('#invoice-text').text(invoiceText);
@@ -155,6 +192,7 @@ Total: ${invoice.total}
             editInvoice(invoice);
         });
     }
+
     // Edit Invoice Function
     function editInvoice(invoice) {
         $('#input-method').val('form').trigger('change');
@@ -164,6 +202,8 @@ Total: ${invoice.total}
         $('#customer-email').val(invoice.email || '');
         $('#invoice-number').val(invoice.invoiceNumber);
         $('#invoice-date').val(invoice.invoiceDate);
+        $('#currency').val(invoice.currency);
+        $('#currency-position').val(invoice.currencyPosition);
 
         // Clear existing items and repopulate
         $('#items-container').empty();
