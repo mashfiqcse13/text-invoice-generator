@@ -143,7 +143,7 @@ jQuery(document).ready(function ($) {
         };
         reader.readAsText(file);
     });
-
+    
     // Display Invoice
     function displayInvoice(invoice) {
         const formatCurrency = (amount) => {
@@ -153,18 +153,28 @@ jQuery(document).ready(function ($) {
         };
 
         const invoiceText = `
-Customer Name: ${invoice.customerName}
-Phone: ${invoice.phone}
-Email: ${invoice.email || 'N/A'}
-Invoice Number: ${invoice.invoiceNumber}
-Invoice Date: ${invoice.invoiceDate}
+🧾 Invoice Details:
+===================
+Invoice Number : ${invoice.invoiceNumber}
+Invoice Date   : ${invoice.invoiceDate}
+Customer Name  : ${invoice.customerName}
+Phone          : ${invoice.phone}
+Email          : ${invoice.email || 'N/A'}
 
-Items:
-${invoice.items.map(item =>
-            `${item.description} | Quantity: ${item.quantity} | Unit Price: ${formatCurrency(item.unitPrice)} | Total: ${formatCurrency(item.itemTotal)}`
+📋 Invoice Description:
+=======================
+${invoice.items.map((item,index) =>
+            `   ${index+1}️⃣  ${item.description}
+       Quantity   : ${item.quantity}
+       Unit Price : ${formatCurrency(item.unitPrice)}
+       Total      : ${formatCurrency(item.itemTotal)}`
         ).join('\n')}
 
-Total: ${formatCurrency(invoice.total)}
+📋 Invoice Summary:
+===================
+💵 Total      : ${formatCurrency(invoice.total)}
+💳 Total Paid : ${formatCurrency(0)}
+🕐 Total Due  : ${formatCurrency(invoice.total)}
         `;
 
         $('#invoice-text').text(invoiceText);

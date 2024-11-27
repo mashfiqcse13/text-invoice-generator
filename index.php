@@ -6,9 +6,11 @@ Version: 1.0
 Author: MD. Mashfiqur Rahman
 */
 
-function dig_enqueue_scripts() {
+function dig_enqueue_scripts()
+{
+    $ver = "1.0.1";// version number of the plugin
     wp_enqueue_script('jquery');
-    wp_enqueue_script('dig-script', plugin_dir_url(__FILE__) . 'assets/js/dig-script.js', array('jquery'), '1.0', true);
-    wp_enqueue_style('dig-style', plugin_dir_url(__FILE__) . 'assets/css/dig-style.css');
+    wp_enqueue_script('dig-script', plugin_dir_url(__FILE__) . 'assets/js/dig-script.js', array('jquery'), $ver, true);
+    wp_enqueue_style('dig-style', plugin_dir_url(__FILE__) . 'assets/css/dig-style.css', [], $ver);
 }
 add_action('wp_enqueue_scripts', 'dig_enqueue_scripts');
